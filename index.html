@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>HexLab — Personal Code Library</title>
+<title>HexUnit — Personal Code Library</title>
 <style>
 :root{--bg:#07090d;--panel:#0d1118;--panel2:#121925;--line:#202b3b;--text:#f5f7fb;--muted:#8b98aa;--accent:#7c5cff;--accent2:#a996ff;--glow:#9b7cff}
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(circle at 50% -10%,#26165f 0,transparent 35%),radial-gradient(circle at 90% 30%,#101d3b 0,transparent 28%),var(--bg);color:var(--text);font:15px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,sans-serif}
@@ -14,7 +14,7 @@ button,input,textarea{font:inherit}button{cursor:pointer}.app{min-height:100vh}.
 </head>
 <body>
 <div class="app">
-<aside class="sidebar"><div class="brand"><span class="hex">⬡</span><span>HexLab</span></div><div class="nav"><button class="active" onclick="setView('all',this)">All Code</button><button onclick="setView('list',this)">Code List</button><button onclick="setView('favorites',this)">Favorites</button><button onclick="setView('recent',this)">Recently Added</button></div></aside>
+<aside class="sidebar"><div class="brand"><span class="hex">⬡</span><span>HexUnit</span></div><div class="nav"><button class="active" onclick="setView('all',this)">All Code</button><button onclick="setView('list',this)">Code List</button><button onclick="setView('favorites',this)">Favorites</button><button onclick="setView('recent',this)">Recently Added</button></div></aside>
 <main class="main">
 <header class="top"><div class="title"><h1>My Code Library</h1><p>Your personal, searchable code collection.</p></div></header>
 <section class="code-disto"><div class="disto-head"><div><h2>⬡ Code Distribution</h2><p>Search through your code collection.</p></div><span class="small">HEX // INDEX</span></div><div class="search-wrap"><span class="search-icon">⌕</span><input id="search" class="search" placeholder="Search titles, descriptions, categories, or code..." oninput="render()"></div></section>
