@@ -24,13 +24,13 @@ button,input,textarea{font:inherit}button{cursor:pointer}.app{min-height:100vh}.
 <script src="decoder/decoder.js"></script>
 <script>
 const KEY='hexlab-code-v1';let items=JSON.parse(localStorage.getItem(KEY)||'[]');let category='All';let view='all';
-const CODE_UNIT_INDEX='https://api.github.com/repos/Hexkeys/HexUnit/contents/code%20unit/index.json';
-const CODE_UNIT_BASE='https://api.github.com/repos/Hexkeys/HexUnit/contents/code%20unit/';
+const CODE_UNIT_INDEX='https://cdn.jsdelivr.net/gh/Hexkeys/HexUnit@main/code%20unit/index.json';
+const CODE_UNIT_BASE='https://cdn.jsdelivr.net/gh/Hexkeys/HexUnit@main/code%20unit/';
 async function loadCodeUnits(){
   try{
     const index=await fetch(CODE_UNIT_INDEX,{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error('index');return r.json()});
     const loaded=await Promise.all(index.map(async u=>{
-      const code=await fetch(CODE_UNIT_BASE+encodeURIComponent(u.id)+'/'+encodeURIComponent(u.codePath),{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error('code');return r.json()}).then(x=>atob(x.content.replace(/\n/g,'')));
+      const code=await fetch(CODE_UNIT_BASE+encodeURIComponent(u.id)+'/'+encodeURIComponent(u.codePath),{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error('code');return r.text()});
       return {id:u.id,title:u.title,description:u.description,category:u.language||'Other',code,favorite:false,created:Date.now()};
     }));
     items=loaded;
