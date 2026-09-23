@@ -24,6 +24,22 @@ button,input,textarea{font:inherit}button{cursor:pointer}.app{min-height:100vh}.
 <script src="decoder/decoder.js"></script>
 <script>
 const KEY='hexlab-code-v1';let items=JSON.parse(localStorage.getItem(KEY)||'[]');let category='All';let view='all';
+const CODE_UNIT_INDEX='https://raw.githubusercontent.com/Hexkeys/HexUnit/main/code%20unit/index.json';
+const CODE_UNIT_BASE='https://raw.githubusercontent.com/Hexkeys/HexUnit/main/code%20unit/';
+async function loadCodeUnits(){
+  try{
+    const index=await fetch(CODE_UNIT_INDEX,{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error('index');return r.json()});
+    const loaded=await Promise.all(index.map(async u=>{
+      const code=await fetch(CODE_UNIT_BASE+encodeURIComponent(u.id)+'/'+encodeURIComponent(u.codePath),{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error('code');return r.text()});
+      return {id:u.id,title:u.title,description:u.description,category:u.language||'Other',code,favorite:false,created:Date.now()};
+    }));
+    items=loaded;
+    render();
+  }catch(e){
+    console.error('Could not load Code Units:',e);
+    render();
+  }
+}
 function save(){localStorage.setItem(KEY,JSON.stringify(items))}
 function setView(v,el){view=v;document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));el.classList.add('active');render()}
 function openDetail(id){const x=items.find(i=>i.id===id);document.getElementById('dtitle').textContent=x.title;document.getElementById('ddesc').textContent=x.description||'No description';document.getElementById('dtag').innerHTML='<span class="tag">'+x.category+'</span>';document.getElementById('dcode').textContent=x.code;document.getElementById('detail').classList.add('open')}
@@ -32,8 +48,8 @@ function toggleFav(id,e){e.stopPropagation();const x=items.find(i=>i.id===id);x.
 function del(id,e){e.stopPropagation();if(confirm('Delete this code?')){items=items.filter(i=>i.id!==id);save();render()}}
 function render(){const q=document.getElementById('search').value.toLowerCase();let cats=['All',...new Set(items.map(i=>i.category))];document.getElementById('chips').innerHTML=cats.map(c=>'<button class="chip '+(category===c?'active':'')+'" onclick="category='+JSON.stringify(c)+';render()">'+c+'</button>').join('');
 let data=items.filter(i=>(category==='All'||i.category===category)&&(!q||(i.title+' '+i.description+' '+i.category+' '+i.code).toLowerCase().includes(q)));if(view==='favorites')data=data.filter(i=>i.favorite);if(view==='recent')data=data.slice().sort((a,b)=>b.created-a.created).slice(0,10);if(view==='list')data=data.slice().sort((a,b)=>a.title.localeCompare(b.title));
-document.getElementById('grid').innerHTML=data.length?data.map(i=>'<article class="card" onclick="openDetail('+i.id+')"><h3>'+esc(i.title)+'</h3><p class="desc">'+esc(i.description||'No description')+'</p><div class="meta"><span class="tag">'+i.category+'</span><span><button class="btn" onclick="toggleFav('+i.id+',event)">'+(i.favorite?'★':'☆')+'</button> <button class="btn" onclick="del('+i.id+',event)">Delete</button></span></div></article>').join(''):'<div class="empty">No code saved yet.</div>'}
-function esc(s){return s.replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]))}
-render();
-</script>
+document.getElementById('grid').innerHTML=data.length?data.map(i=>'<article class="card" onclick="openDetail('+JSON.stringify(i.id)+')"><h3>'+esc(i.title)+'</h3><p class="desc">'+esc(i.description||'No description')+'</p><div class="meta"><span class="tag">'+esc(i.category)+'</span><span><button class="btn" onclick="toggleFav('+JSON.stringify(i.id)+',event)">'+(i.favorite?'★':'☆')+'</button></span></div></article>').join(''):'<div class="empty">No code saved yet.</div>'}
+function esc(s){return String(s).replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]))}
+loadCodeUnits();
+</script>>
 </body></html>
