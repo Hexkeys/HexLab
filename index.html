@@ -35,6 +35,7 @@ async function loadCodeUnits(){
     }));
     items=loaded;
     render();
+    showCodeFromUrl();
   }catch(e){
     console.error('Could not load Code Units:',e);
     render();
@@ -42,8 +43,9 @@ async function loadCodeUnits(){
 }
 function save(){localStorage.setItem(KEY,JSON.stringify(items))}
 function setView(v,el){view=v;document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));el.classList.add('active');render()}
-function openDetail(id){const x=items.find(i=>i.id===id);document.getElementById('dtitle').textContent=x.title;document.getElementById('ddesc').textContent=x.description||'No description';document.getElementById('dtag').innerHTML='<span class="tag">'+x.category+'</span>';document.getElementById('dcode').textContent=x.code;document.getElementById('detail').classList.add('open')}
-function closeDetail(){document.getElementById('detail').classList.remove('open')}
+function openDetail(id){window.location.href='?code='+encodeURIComponent(id)}
+function showCodeFromUrl(){const id=new URLSearchParams(window.location.search).get('code');if(!id)return false;const x=items.find(i=>i.id===id);if(!x)return false;document.getElementById('dtitle').textContent=x.title;document.getElementById('ddesc').textContent=x.description||'No description';document.getElementById('dtag').innerHTML='<span class="tag">'+x.category+'</span>';document.getElementById('dcode').textContent=x.code;document.getElementById('detail').classList.add('open');return true}
+function closeDetail(){window.location.href=window.location.pathname}
 function toggleFav(id,e){e.stopPropagation();const x=items.find(i=>i.id===id);x.favorite=!x.favorite;save();render()}
 function del(id,e){e.stopPropagation();if(confirm('Delete this code?')){items=items.filter(i=>i.id!==id);save();render()}}
 function render(){const q=document.getElementById('search').value.toLowerCase();let cats=['All',...new Set(items.map(i=>i.category))];document.getElementById('chips').innerHTML=cats.map(c=>'<button class="chip '+(category===c?'active':'')+'" onclick="category='+JSON.stringify(c)+';render()">'+c+'</button>').join('');
