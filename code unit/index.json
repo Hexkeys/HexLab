@@ -5,5 +5,12 @@
     "description": "A simple Python example stored inside a Code Unit.",
     "language": "Python",
     "codePath": "code.py"
+  },
+  {
+    "id": "hello-python",
+    "title": "Hello Python",
+    "description": "A simple Python example that greets the user.",
+    "language": "Python",
+    "codePath": "code.py"
   }
 ]
