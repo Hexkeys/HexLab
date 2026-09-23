@@ -43,14 +43,15 @@ async function loadCodeUnits(){
 }
 function save(){localStorage.setItem(KEY,JSON.stringify(items))}
 function setView(v,el){view=v;document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));el.classList.add('active');render()}
-function openDetail(id){window.location.hash='code='+encodeURIComponent(id);showCodeFromUrl()}
+function openDetail(id){window.location.hash='code='+encodeURIComponent(id)}
+window.addEventListener('hashchange',showCodeFromUrl);
 function showCodeFromUrl(){const id=new URLSearchParams(window.location.hash.replace(/^#/,'' )).get('code');if(!id)return false;const x=items.find(i=>i.id===id);if(!x)return false;document.getElementById('dtitle').textContent=x.title;document.getElementById('ddesc').textContent=x.description||'No description';document.getElementById('dtag').innerHTML='<span class="tag">'+x.category+'</span>';document.getElementById('dcode').textContent=x.code;document.getElementById('detail').classList.add('open');return true}
 function closeDetail(){history.pushState({},'',window.location.pathname+window.location.search);document.getElementById('detail').classList.remove('open')}
 function toggleFav(id,e){e.stopPropagation();const x=items.find(i=>i.id===id);x.favorite=!x.favorite;save();render()}
 function del(id,e){e.stopPropagation();if(confirm('Delete this code?')){items=items.filter(i=>i.id!==id);save();render()}}
 function render(){const q=document.getElementById('search').value.toLowerCase();let cats=['All',...new Set(items.map(i=>i.category))];document.getElementById('chips').innerHTML=cats.map(c=>'<button class="chip '+(category===c?'active':'')+'" onclick="category='+JSON.stringify(c)+';render()">'+c+'</button>').join('');
 let data=items.filter(i=>(category==='All'||i.category===category)&&(!q||(i.title+' '+i.description+' '+i.category+' '+i.code).toLowerCase().includes(q)));if(view==='favorites')data=data.filter(i=>i.favorite);if(view==='recent')data=data.slice().sort((a,b)=>b.created-a.created).slice(0,10);if(view==='list')data=data.slice().sort((a,b)=>a.title.localeCompare(b.title));
-document.getElementById('grid').innerHTML=data.length?data.map(i=>'<article class="card" onclick="openDetail('+JSON.stringify(i.id)+')"><h3>'+esc(i.title)+'</h3><p class="desc">'+esc(i.description||'No description')+'</p><div class="meta"><span class="tag">'+esc(i.category)+'</span><span><button class="btn" onclick="toggleFav('+JSON.stringify(i.id)+',event)">'+(i.favorite?'★':'☆')+'</button></span></div></article>').join(''):'<div class="empty">No code saved yet.</div>'}
+document.getElementById('grid').innerHTML=data.length?data.map(i=>'<article class="card" role="button" tabindex="0" onclick="openDetail('+JSON.stringify(i.id)+')" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();openDetail('+JSON.stringify(i.id)+')}" ><h3>'+esc(i.title)+'</h3><p class="desc">'+esc(i.description||'No description')+'</p><div class="meta"><span class="tag">'+esc(i.category)+'</span><span><button class="btn" type="button" onclick="toggleFav('+JSON.stringify(i.id)+',event)">'+(i.favorite?'★':'☆')+'</button></span></div></article>').join(''):'<div class="empty">No code saved yet.</div>'}
 function esc(s){return String(s).replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]))}
 loadCodeUnits();
 </script>
