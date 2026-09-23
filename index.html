@@ -43,9 +43,9 @@ async function loadCodeUnits(){
 }
 function save(){localStorage.setItem(KEY,JSON.stringify(items))}
 function setView(v,el){view=v;document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));el.classList.add('active');render()}
-function openDetail(id){window.location.href='?code='+encodeURIComponent(id)}
-function showCodeFromUrl(){const id=new URLSearchParams(window.location.search).get('code');if(!id)return false;const x=items.find(i=>i.id===id);if(!x)return false;document.getElementById('dtitle').textContent=x.title;document.getElementById('ddesc').textContent=x.description||'No description';document.getElementById('dtag').innerHTML='<span class="tag">'+x.category+'</span>';document.getElementById('dcode').textContent=x.code;document.getElementById('detail').classList.add('open');return true}
-function closeDetail(){window.location.href=window.location.pathname}
+function openDetail(id){window.location.hash='code='+encodeURIComponent(id);showCodeFromUrl()}
+function showCodeFromUrl(){const id=new URLSearchParams(window.location.hash.replace(/^#/,'' )).get('code');if(!id)return false;const x=items.find(i=>i.id===id);if(!x)return false;document.getElementById('dtitle').textContent=x.title;document.getElementById('ddesc').textContent=x.description||'No description';document.getElementById('dtag').innerHTML='<span class="tag">'+x.category+'</span>';document.getElementById('dcode').textContent=x.code;document.getElementById('detail').classList.add('open');return true}
+function closeDetail(){history.pushState({},'',window.location.pathname+window.location.search);document.getElementById('detail').classList.remove('open')}
 function toggleFav(id,e){e.stopPropagation();const x=items.find(i=>i.id===id);x.favorite=!x.favorite;save();render()}
 function del(id,e){e.stopPropagation();if(confirm('Delete this code?')){items=items.filter(i=>i.id!==id);save();render()}}
 function render(){const q=document.getElementById('search').value.toLowerCase();let cats=['All',...new Set(items.map(i=>i.category))];document.getElementById('chips').innerHTML=cats.map(c=>'<button class="chip '+(category===c?'active':'')+'" onclick="category='+JSON.stringify(c)+';render()">'+c+'</button>').join('');
@@ -53,5 +53,5 @@ let data=items.filter(i=>(category==='All'||i.category===category)&&(!q||(i.titl
 document.getElementById('grid').innerHTML=data.length?data.map(i=>'<article class="card" onclick="openDetail('+JSON.stringify(i.id)+')"><h3>'+esc(i.title)+'</h3><p class="desc">'+esc(i.description||'No description')+'</p><div class="meta"><span class="tag">'+esc(i.category)+'</span><span><button class="btn" onclick="toggleFav('+JSON.stringify(i.id)+',event)">'+(i.favorite?'★':'☆')+'</button></span></div></article>').join(''):'<div class="empty">No code saved yet.</div>'}
 function esc(s){return String(s).replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]))}
 loadCodeUnits();
-</script>>
+</script>
 </body></html>
