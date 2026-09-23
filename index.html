@@ -16,32 +16,23 @@ button,input,textarea{font:inherit}button{cursor:pointer}.app{display:flex;min-h
 <div class="app">
 <aside class="sidebar"><div class="brand"><span class="hex">⬡</span><span>HexLab</span></div><div class="nav"><button class="active" onclick="setView('all',this)">All Code</button><button onclick="setView('favorites',this)">Favorites</button><button onclick="setView('recent',this)">Recently Added</button></div></aside>
 <main class="main">
-<header class="top"><div class="title"><h1>My Code Library</h1><p>Your personal, searchable code collection.</p></div><div class="actions"><button class="btn primary" onclick="openModal()">＋ Add Code</button></div></header>
+<header class="top"><div class="title"><h1>My Code Library</h1><p>Your personal, searchable code collection.</p></div></header>
 <section class="code-disto"><div class="disto-head"><div><h2>⬡ Code Disto</h2><p>Search through your code collection.</p></div><span class="small">HEX // INDEX</span></div><div class="search-wrap"><span class="search-icon">⌕</span><input id="search" class="search" placeholder="Search titles, descriptions, categories, or code..." oninput="render()"></div></section>
 <div id="chips" class="chips"></div><section id="grid" class="grid"></section>
 </main></div>
-<div id="modal" class="modal"><div class="dialog"><h2>Add code</h2>
-<form id="form"><div class="field"><label>Title</label><input id="title" required placeholder="e.g. Animated Navbar"></div>
-<div class="field"><label>Description</label><input id="description" placeholder="What does this code do?"></div>
-<div class="field"><label>Code</label><textarea id="code" required placeholder="Paste your code here..."></textarea></div>
-<div class="small">Category is detected automatically from the code.</div>
-<div class="row"><button type="button" class="btn" onclick="closeModal()">Cancel</button><button class="btn primary">Save Code</button></div></form></div></div>
 <div id="detail" class="modal"><div class="dialog"><div class="detail"><button class="btn" onclick="closeDetail()">← Back</button><h2 id="dtitle"></h2><p id="ddesc" class="desc"></p><div id="dtag"></div><pre id="dcode"></pre></div></div></div>
 <script src="decoder/decoder.js"></script>
 <script>
 const KEY='hexlab-code-v1';let items=JSON.parse(localStorage.getItem(KEY)||'[]');let category='All';let view='all';
 function save(){localStorage.setItem(KEY,JSON.stringify(items))}
 function setView(v,el){view=v;document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));el.classList.add('active');render()}
-function openModal(){document.getElementById('modal').classList.add('open');setTimeout(()=>document.getElementById('title').focus(),50)}
-function closeModal(){document.getElementById('modal').classList.remove('open');document.getElementById('form').reset()}
-document.getElementById('form').onsubmit=e=>{e.preventDefault();const code=document.getElementById('code').value;items.unshift({id:Date.now(),title:document.getElementById('title').value.trim(),description:document.getElementById('description').value.trim(),code,category:detect(code),favorite:false,created:Date.now()});save();closeModal();render()};
 function openDetail(id){const x=items.find(i=>i.id===id);document.getElementById('dtitle').textContent=x.title;document.getElementById('ddesc').textContent=x.description||'No description';document.getElementById('dtag').innerHTML='<span class="tag">'+x.category+'</span>';document.getElementById('dcode').textContent=x.code;document.getElementById('detail').classList.add('open')}
 function closeDetail(){document.getElementById('detail').classList.remove('open')}
 function toggleFav(id,e){e.stopPropagation();const x=items.find(i=>i.id===id);x.favorite=!x.favorite;save();render()}
 function del(id,e){e.stopPropagation();if(confirm('Delete this code?')){items=items.filter(i=>i.id!==id);save();render()}}
 function render(){const q=document.getElementById('search').value.toLowerCase();let cats=['All',...new Set(items.map(i=>i.category))];document.getElementById('chips').innerHTML=cats.map(c=>'<button class="chip '+(category===c?'active':'')+'" onclick="category='+JSON.stringify(c)+';render()">'+c+'</button>').join('');
 let data=items.filter(i=>(category==='All'||i.category===category)&&(!q||(i.title+' '+i.description+' '+i.category+' '+i.code).toLowerCase().includes(q)));if(view==='favorites')data=data.filter(i=>i.favorite);if(view==='recent')data=data.slice().sort((a,b)=>b.created-a.created).slice(0,10);
-document.getElementById('grid').innerHTML=data.length?data.map(i=>'<article class="card" onclick="openDetail('+i.id+')"><h3>'+esc(i.title)+'</h3><p class="desc">'+esc(i.description||'No description')+'</p><div class="meta"><span class="tag">'+i.category+'</span><span><button class="btn" onclick="toggleFav('+i.id+',event)">'+(i.favorite?'★':'☆')+'</button> <button class="btn" onclick="del('+i.id+',event)">Delete</button></span></div></article>').join(''):'<div class="empty">No code yet. Click <b>Add Code</b> to save your first snippet.</div>'}
+document.getElementById('grid').innerHTML=data.length?data.map(i=>'<article class="card" onclick="openDetail('+i.id+')"><h3>'+esc(i.title)+'</h3><p class="desc">'+esc(i.description||'No description')+'</p><div class="meta"><span class="tag">'+i.category+'</span><span><button class="btn" onclick="toggleFav('+i.id+',event)">'+(i.favorite?'★':'☆')+'</button> <button class="btn" onclick="del('+i.id+',event)">Delete</button></span></div></article>').join(''):'<div class="empty">No code saved yet.</div>'}
 function esc(s){return s.replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]))}
 render();
 </script>
