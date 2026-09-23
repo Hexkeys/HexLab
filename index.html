@@ -43,7 +43,7 @@ async function loadCodeUnits(){
 }
 function save(){localStorage.setItem(KEY,JSON.stringify(items))}
 function setView(v,el){view=v;document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));el.classList.add('active');render()}
-function openDetail(id){window.location.hash='code='+encodeURIComponent(id)}
+function openDetail(id){const url=new URL(window.location.href);url.hash='code='+encodeURIComponent(id);window.open(url.href,'_blank')||showCodeFromUrl()}
 window.addEventListener('hashchange',showCodeFromUrl);
 function showCodeFromUrl(){const id=new URLSearchParams(window.location.hash.replace(/^#/,'' )).get('code');if(!id)return false;const x=items.find(i=>i.id===id);if(!x)return false;document.getElementById('dtitle').textContent=x.title;document.getElementById('ddesc').textContent=x.description||'No description';document.getElementById('dtag').innerHTML='<span class="tag">'+x.category+'</span>';document.getElementById('dcode').textContent=x.code;document.getElementById('detail').classList.add('open');return true}
 function closeDetail(){history.pushState({},'',window.location.pathname+window.location.search);document.getElementById('detail').classList.remove('open')}
