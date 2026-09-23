@@ -17,7 +17,7 @@ button,input,textarea{font:inherit}button{cursor:pointer}.app{min-height:100vh}.
 <aside class="sidebar"><div class="brand"><span class="hex">⬡</span><span>HexLab</span></div><div class="nav"><button class="active" onclick="setView('all',this)">All Code</button><button onclick="setView('favorites',this)">Favorites</button><button onclick="setView('recent',this)">Recently Added</button></div></aside>
 <main class="main">
 <header class="top"><div class="title"><h1>My Code Library</h1><p>Your personal, searchable code collection.</p></div></header>
-<section class="code-disto"><div class="disto-head"><div><h2>⬡ Code Disto</h2><p>Search through your code collection.</p></div><span class="small">HEX // INDEX</span></div><div class="search-wrap"><span class="search-icon">⌕</span><input id="search" class="search" placeholder="Search titles, descriptions, categories, or code..." oninput="render()"></div></section>
+<section class="code-disto"><div class="disto-head"><div><h2>⬡ Code Distribution</h2><p>Search through your code collection.</p></div><span class="small">HEX // INDEX</span></div><div class="search-wrap"><span class="search-icon">⌕</span><input id="search" class="search" placeholder="Search titles, descriptions, categories, or code..." oninput="render()"></div></section>
 <div id="chips" class="chips"></div><section id="grid" class="grid"></section>
 </main></div>
 <div id="detail" class="modal"><div class="dialog"><div class="detail"><button class="btn" onclick="closeDetail()">← Back</button><h2 id="dtitle"></h2><p id="ddesc" class="desc"></p><div id="dtag"></div><pre id="dcode"></pre></div></div></div>
