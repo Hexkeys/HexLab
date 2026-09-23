@@ -1,7 +1,0 @@
-services:
-  - type: web
-    name: hexlab
-    runtime: static
-    buildCommand: ""
-    staticPublishPath: .
-    autoDeploy: true
