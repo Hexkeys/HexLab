@@ -1,0 +1,9 @@
+[
+  {
+    "id": "example-code",
+    "title": "Hello HexUnit",
+    "description": "A simple Python example stored inside a Code Unit.",
+    "language": "Python",
+    "codePath": "code.py"
+  }
+]
